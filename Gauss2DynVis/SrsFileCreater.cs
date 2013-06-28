@@ -17,6 +17,13 @@ namespace Gauss2DynVis
             _param = param;
         }
 
+        public void WriteTo(string filePath)
+        {
+            using (var file = File.OpenWrite(filePath))
+            {
+                WriteTo(file);
+            }
+        }
 
         public void WriteTo(Stream stream)
         {
@@ -40,10 +47,12 @@ namespace Gauss2DynVis
             writer.WriteLine();
             writer.WriteLine("Structures:");
 
-            foreach (var geom in geoms)
+            _param.ParamsIterator(i =>
             {
+                var geom = geoms[i];
+
                 writer.WriteLine(geom.Geom.ToString());
-            }
+            });
 
             writer.Close();
         }
@@ -57,16 +66,7 @@ namespace Gauss2DynVis
                 _iteration = iteration;
             }
 
-            public Geometry Geom { get { return _iteration.StandardOrientation; } }
+            public Geometry Geom { get { return _iteration.StandardOrientation ?? _iteration.InputOrientation; } }
         }
-    }
-
-    public class Parameters
-    {
-        public int Q1Count { get; set; }
-        public int Q2Count { get; set; }
-
-        public bool Q1Inverse { get; set; }
-        public bool Q2Inverse { get; set; }
     }
 }

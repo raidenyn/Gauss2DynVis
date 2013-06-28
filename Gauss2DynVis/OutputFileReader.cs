@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 
 namespace Gauss2DynVis
@@ -8,12 +7,14 @@ namespace Gauss2DynVis
     {
         private readonly static List<IPattern> Patterns = new List<IPattern>
             {
-                new NewIterationPattern(),
                 new EnergyPattern(),
                 new OptimizationComplitedPattern(),
                 new StandardOrientationPattern(),
-                new ZMatrixOrientationPattern()
+                new ZMatrixOrientationPattern(),
+                new InputOrientationPattern()
             };
+
+        private readonly static NewIterationPattern NewIterationPattern = new NewIterationPattern();
 
         public List<OptIteration> ReadFile(TextReader reader)
         {
@@ -28,14 +29,15 @@ namespace Gauss2DynVis
                     break;
                 }
 
+                if (NewIterationPattern.IsNewIteration(line))
+                {
+                    list.Next();
+                }
+
                 foreach (var pattern in Patterns)
                 {
                     if (pattern.Parse(line, reader, list.Current))
                     {
-                        if (pattern.IsEndIteration)
-                        {
-                            list.Next();
-                        }
                         break;
                     }
                 }

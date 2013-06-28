@@ -6,15 +6,13 @@ namespace Gauss2DynVis
     public interface IPattern
     {
         bool Parse(string line, TextReader file, OptIteration iteration);
-
-        bool IsEndIteration { get; }
     }
 
-    public class NewIterationPattern : IPattern
+    public class NewIterationPattern
     {
-        private readonly static Regex NewIterationRegex = new Regex(@"Z-MATRIX \(ANGSTROMS AND DEGREES\)");
+        private readonly static Regex NewIterationRegex = new Regex(@"(Z-MATRIX \(ANGSTROMS AND DEGREES\))|(Input orientation:)");
 
-        public bool Parse(string line, TextReader file, OptIteration iteration)
+        public bool IsNewIteration(string line)
         {
             var match = NewIterationRegex.Match(line);
 
@@ -25,8 +23,6 @@ namespace Gauss2DynVis
 
             return false;
         }
-
-        public bool IsEndIteration { get { return true; } }
     }
 
     public class EnergyPattern : IPattern
@@ -45,8 +41,6 @@ namespace Gauss2DynVis
 
             return false;
         }
-
-        public bool IsEndIteration { get { return false; } }
     }
 
     public class OptimizationComplitedPattern : IPattern
@@ -66,8 +60,6 @@ namespace Gauss2DynVis
 
             return false;
         }
-
-        public bool IsEndIteration { get { return false; } }
     }
 
     public abstract class OrientationPattern : IPattern
@@ -89,8 +81,6 @@ namespace Gauss2DynVis
         }
 
         public abstract bool Parse(string line, TextReader file, OptIteration iteration);
-
-        public bool IsEndIteration { get { return false; } }
     }
 
 
@@ -132,6 +122,28 @@ namespace Gauss2DynVis
             if (geom != null)
             {
                 iteration.ZMatrixOrientation = geom;
+            }
+
+            return geom != null;
+        }
+    }
+
+    public class InputOrientationPattern : OrientationPattern
+    {
+        private readonly static Regex StandardOrientationRegex = new Regex(@"Input orientation:");
+
+        protected override Regex OrientationNameRegex
+        {
+            get { return StandardOrientationRegex; }
+        }
+
+        public override bool Parse(string line, TextReader file, OptIteration iteration)
+        {
+            var geom = GetGeom(line, file);
+
+            if (geom != null)
+            {
+                iteration.InputOrientation = geom;
             }
 
             return geom != null;

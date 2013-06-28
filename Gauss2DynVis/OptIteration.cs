@@ -9,5 +9,7 @@
         public Geometry StandardOrientation;
 
         public Geometry ZMatrixOrientation;
+
+        public Geometry InputOrientation;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,13 @@ namespace Gauss2DynVis
             _param = param;
         }
 
+        public void WriteTo(string filePath)
+        {
+            using (var file = File.OpenWrite(filePath))
+            {
+                WriteTo(file);
+            }
+        }
 
         public void WriteTo(Stream stream)
         {
@@ -31,19 +39,35 @@ namespace Gauss2DynVis
             writer.WriteLine("Axes2: 'Axes2' [normal Angstrom] (Ended,Ended)");
             writer.WriteLine();
             writer.WriteLine("Q1 Values:");
-            writer.WriteLine("<Тут координаты через пробел>");
+            writer.WriteLine(GetAxeValues(_param.Q1Count));
             writer.WriteLine();
             writer.WriteLine("Q2 Values:");
-            writer.WriteLine("<Тут координаты через пробел>");
+            writer.WriteLine(GetAxeValues(_param.Q2Count));
             writer.WriteLine();
             writer.WriteLine("Energy Values:");
 
-            foreach (var iter in _iterations)
-            {
-                writer.WriteLine(iter.Energy.ToString());
-            }
+            var iterations = _iterations.ToList();
+
+            _param.ParamsIterator(i =>
+                {
+                    var iter = iterations[i];
+
+                    writer.WriteLine(iter.Energy.ToString(CultureInfo.InvariantCulture));
+                });
 
             writer.Close();
+        }
+
+        private string GetAxeValues(int count)
+        {
+            var sb = new StringBuilder();
+
+            for (var i = 1; i <= count; i++)
+            {
+                sb.Append(" " + i);
+            }
+
+            return sb.ToString();
         }
     }
 }
