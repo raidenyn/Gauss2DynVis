@@ -22,7 +22,7 @@ namespace Gauss2DynVis
 
         public bool SetFromString(string str)
         {
-            if (String.IsNullOrWhiteSpace(str))
+            if (String.IsNullOrEmpty(str))
             {
                 return false;
             }

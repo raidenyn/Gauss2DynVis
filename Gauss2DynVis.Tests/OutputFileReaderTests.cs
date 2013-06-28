@@ -28,13 +28,13 @@ namespace Gauss2DynVis.Tests
 
             var optimals = iterations.Where(iter => iter.IsOptimal).ToList();
 
-            using (var file = File.OpenWrite("test.srs"))
-            {
-                new SrsFileCreater(optimals, new Parameters { Q1Count = 11, Q2Count = 11 }).WriteTo(file);
-            }
             using (var file = File.OpenWrite("test.sam"))
             {
                 new SamFileCreater(optimals, new Parameters { Q1Count = 11, Q2Count = 11 }).WriteTo(file);
+            }
+            using (var file = File.OpenWrite("test.srs"))
+            {
+                new SrsFileCreater(optimals, new Parameters { Q1Count = 11, Q2Count = 11 }).WriteTo(file);
             }
 
             

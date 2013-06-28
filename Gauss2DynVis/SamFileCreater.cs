@@ -33,7 +33,7 @@ namespace Gauss2DynVis
                 throw new ArgumentException("Iterations count is not equeal Q1Count * Q2Count");
             }
 
-            var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true);
+            var writer = new StreamWriter(stream, Encoding.UTF8);
 
             writer.WriteLine("Axes1: 'Axes1' [normal Angstrom] (Ended,Ended)");
             writer.WriteLine("Axes2: 'Axes2' [normal Angstrom] (Ended,Ended)");

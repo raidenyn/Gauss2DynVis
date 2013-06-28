@@ -33,7 +33,7 @@ namespace Gauss2DynVis
             }
 
             var geoms = _iterations.Select(iter => new GeomSource(iter)).ToList();
-            var writer = new StreamWriter(stream, Encoding.UTF8, 1024, true);
+            var writer = new StreamWriter(stream, Encoding.UTF8);
 
             writer.WriteLine();
             writer.WriteLine("Elements:");
